@@ -1106,6 +1106,44 @@
                                 </div>
                               </div>
                             </div>
+                                                          <div class="accordion-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button"
+                              data-bs-toggle="collapse" data-bs-target="#collapseMatrix">
+                              🧮 Matrix Calculator
+                            </button>
+                          </h2>
+
+                          <div id="collapseMatrix" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+
+                              <label class="small fw-bold">Matrix A</label>
+                              <textarea id="matrixA" class="form-control mb-2" rows="3"
+                                placeholder="Example:
+                        1 2
+                        3 4"></textarea>
+
+                              <label class="small fw-bold">Matrix B</label>
+                              <textarea id="matrixB" class="form-control mb-2" rows="3"
+                                placeholder="Optional for add/multiply"></textarea>
+
+                              <div class="d-grid gap-2">
+
+                                <button class="btn btn-sm btn-primary" onclick="matrixAdd()">A + B</button>
+                                <button class="btn btn-sm btn-primary" onclick="matrixMultiply()">A × B</button>
+                                <button class="btn btn-sm btn-secondary" onclick="matrixDeterminant()">det(A)</button>
+                                <button class="btn btn-sm btn-secondary" onclick="matrixInverse()">A⁻¹</button>
+
+                              </div>
+
+                              <div class="mt-3">
+                                <label class="small fw-bold">Result</label>
+                                <pre id="matrixResult" class="p-2 bg-light rounded small"></pre>
+                              </div>
+
+                            </div>
+                          </div>
+                        </div>
 
                             <!-- Quadratic Equation Solver -->
                             <div class="accordion-item">

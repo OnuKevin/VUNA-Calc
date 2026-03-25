@@ -8670,3 +8670,154 @@ function calcAmortization() {
   document.getElementById('amort-summary').style.display = 'block';
   document.getElementById('amort-table-wrapper').style.display = 'block';
 }
+// =============================
+// MATRIX UTILITIES
+// =============================
+function getMatrixA() {
+  return parseMatrix(document.getElementById("matrixA").value);
+}
+
+function getMatrixB() {
+  return parseMatrix(document.getElementById("matrixB").value);
+}
+function parseMatrix(text) {
+  return text.trim().split("\n").map(r =>
+    r.trim().split(/[\s,]+/).map(Number)
+  );
+}
+
+function showMatrixResult(m) {
+  document.getElementById("matrixResult").textContent =
+    Array.isArray(m)
+      ? m.map(r => r.join(" ")).join("\n")
+      : m;
+console.log("here")
+}
+
+// =============================
+// MATRIX ADD
+// =============================
+
+function matrixAdd() {
+  const A = getMatrixA();
+  const B = getMatrixB();
+
+  if (!A.length || !B.length) {
+    showMatrixResult("Enter both matrices");
+    return;
+  }
+
+  if (A.length !== B.length || A[0].length !== B[0].length) {
+    showMatrixResult("Size mismatch");
+    return;
+  }
+
+  const R = A.map((r, i) =>
+    r.map((v, j) => v + B[i][j])
+  );
+
+  showMatrixResult(R);
+}
+
+// =============================
+// MATRIX MULTIPLY
+// =============================
+
+function matrixMultiply() {
+  const A = getMatrixA();
+  const B = getMatrixB();
+
+  if (!A.length || !B.length) {
+    showMatrixResult("Enter both matrices");
+    return;
+  }
+
+  if (A[0].length !== B.length) {
+    showMatrixResult("Invalid dimensions");
+    return;
+  }
+
+  const R = A.map(r =>
+    B[0].map((_, j) =>
+      r.reduce((sum, v, i) => sum + v * B[i][j], 0)
+    )
+  );
+
+  showMatrixResult(R);
+}
+
+// =============================
+// DETERMINANT (2x2 + recursive)
+// =============================
+
+function determinant(m) {
+  if (m.length === 1) return m[0][0];
+
+  if (m.length === 2) {
+    return m[0][0] * m[1][1] - m[0][1] * m[1][0];
+  }
+
+  return m[0].reduce((det, val, i) => {
+    const sub = m.slice(1).map(r =>
+      r.filter((_, j) => j !== i)
+    );
+    return det + (i % 2 ? -1 : 1) * val * determinant(sub);
+  }, 0);
+}
+
+function matrixDeterminant() {
+ const A = getMatrixA();
+  if (!A.length) {
+    showMatrixResult("Enter Matrix A");
+    return;
+  }
+  showMatrixResult(determinant(A));
+}
+
+// =============================
+// MATRIX INVERSE (Gauss-Jordan)
+// =============================
+
+function matrixInverse() {
+  const A = getMatrixA();
+  const n = A.length;
+
+  if (!n || A.some(r => r.length !== n)) {
+    showMatrixResult("Matrix must be square");
+    return;
+  }
+
+  let M = A.map((r, i) =>
+    [...r, ...Array.from({ length: n }, (_, j) => i === j ? 1 : 0)]
+  );
+
+  for (let i = 0; i < n; i++) {
+    let pivot = M[i][i];
+
+    if (pivot === 0) {
+      showMatrixResult("Not invertible");
+      return;
+    }
+
+    for (let j = 0; j < 2 * n; j++) M[i][j] /= pivot;
+
+    for (let k = 0; k < n; k++) {
+      if (k === i) continue;
+      let factor = M[k][i];
+      for (let j = 0; j < 2 * n; j++) {
+        M[k][j] -= factor * M[i][j];
+      }
+    }
+  }
+
+  const inv = M.map(r => r.slice(n));
+  showMatrixResult(inv);
+}
+// =============================
+// UI helper
+// =============================
+
+function openMatrixAccordion() {
+  const el = document.getElementById("collapseMatrix");
+  if (el) new bootstrap.Collapse(el, { toggle: true });
+}
