@@ -344,6 +344,35 @@ function calculateSquareRoot() {
 }
 
 // ------------------------------
+// EXPONENTIAL FUNCTION (e^x)
+// ------------------------------
+function calculateExponential() {
+  if (!currentExpression) return;
+
+  const num = parseFloat(currentExpression);
+
+  if (isNaN(num)) {
+    currentExpression = "Error";
+    updateResult();
+    return;
+  }
+
+  const result = Math.exp(num);
+
+  calculationHistory?.push({
+    expression: `e^${num} = ${result}`,
+    words: numberToWords(result),
+    time: new Date().toLocaleTimeString(),
+  });
+  if (calculationHistory.length > 20) calculationHistory.shift();
+  localStorage.setItem("calcHistory", JSON.stringify(calculationHistory));
+  renderHistory();
+
+  currentExpression = result.toString();
+  updateResult();
+}
+
+// ------------------------------
 // Factorial Helper Function
 // ------------------------------
 function factorial(n) {
@@ -621,6 +650,7 @@ function applyLogarithm() {
 
   updateStepsDisplay();
   updateResult();
+
 }
 
 function toggleInverseMode() {
@@ -676,7 +706,9 @@ function normalizeExpression(expr) {
     .replace(/atan\(/g, "atanDeg(")
     .replace(/sin\(/g, "sinDeg(")
     .replace(/cos\(/g, "cosDeg(")
-    .replace(/tan\(/g, "tanDeg(");
+    .replace(/tan\(/g, "tanDeg(")
+    .replace(/\be\b/g, "Math.E")
+    .replace(/\bpi\b/g, "Math.PI");
 }
 
 function isPrime(num) {
